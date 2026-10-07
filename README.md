@@ -24,3 +24,10 @@ The trade-off: there is no `maxsplit` parameter. `re.split`'s `maxsplit` counts 
 ## Edge cases
 
 Adjacent matches produce an **empty gap segment** between them, so the result list alternates match / gap strictly. This guarantees that joining all `text` fields reconstructs the input exactly, but it means `len(parts)` can exceed the count you'd get from `re.split`. Zero-width matches (including the empty pattern `""`) are supported and terminate correctly; the match segments they produce have `start == end`.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
